@@ -20,8 +20,7 @@ class Slot:
         self.__free = True
         self.__plaque = None
         self.__state = None
-        self.__entry = None
-        return price
+        return price, self.__entry
 
     def State(self):
         return self.__state
@@ -47,14 +46,14 @@ class ParkingLot:
             this_slot.AddCar(plaque, time)
             return x, y
         else:
-            self.Place(plaque)
+            self.Place(plaque, time)
 
     def Exit(self, plaque, time):
         for line in self.__lot:
             for slot in line:
                 if plaque == slot.Info():
                     return slot.RemoveCar(time)
-        return None
+        return None, None
 
     def Show(self):
         for line in self.__lot:
@@ -67,5 +66,12 @@ class ParkingLot:
         for line in self.__lot:
             for slot in line:
                 if slot.IsFree():
+                    return False
+        return True
+    
+    def isEmpty(self):
+        for line in self.__lot:
+            for slot in line:
+                if not slot.IsFree():
                     return False
         return True

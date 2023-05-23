@@ -12,6 +12,22 @@ def CalcutatePrice(minutes):
     else:
         return 10 + ceil(5*((minutes-180)/60))
 
+def MinutesToFormat(min):
+    hour = min//60
+    min = min%60
+    comp = '0' if len(str(min)) == 1 else ''
+    return f"{hour}:{min}{comp}"
+
+def Format(entry, exit):
+    h_entry, m_entry = map(int, entry.split(':'))
+    h_exit, m_exit = map(int, exit.split(':'))
+    m_entry += h_entry * 60
+    m_exit += h_exit * 60
+    if m_exit < m_entry:
+        m_exit += 24*60
+    total_time = m_exit - m_entry
+    return MinutesToFormat(total_time)
+
 def CalculateTicket(entry, exit):
     h_entry, m_entry = map(int, entry.split(':'))
     h_exit, m_exit = map(int, exit.split(':'))
@@ -19,4 +35,5 @@ def CalculateTicket(entry, exit):
     m_exit += h_exit * 60
     if m_exit < m_entry:
         m_exit += 24*60
-    return CalcutatePrice(m_exit - m_entry)
+    total_time = m_exit - m_entry
+    return CalcutatePrice(total_time)
