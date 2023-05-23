@@ -20,5 +20,3 @@ def CalculateTicket(entry, exit):
     if m_exit < m_entry:
         m_exit += 24*60
     return CalcutatePrice(m_exit - m_entry)
-
-print()

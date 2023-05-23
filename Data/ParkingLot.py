@@ -1,5 +1,5 @@
 from Data.States_refs import SearchState
-from Data.Ticket_handle import CalcutateTicket
+from Data.Ticket_handle import CalculateTicket
 from random import randint
 
 class Slot:
@@ -8,23 +8,20 @@ class Slot:
         self.__plaque = None
         self.__state = None
         self.__entry = None
-        self.__exit = None
     
-    def AddCar(self, plaque):
+    def AddCar(self, plaque, time):
         self.__free = False
         self.__plaque = plaque
         self.__state = SearchState(plaque[:3])
+        self.__entry = time
 
-    def RemoveCar(self):
+    def RemoveCar(self, time):
+        price = CalculateTicket(self.__entry, time)
         self.__free = True
         self.__plaque = None
         self.__state = None
-
-    def EntryTime(self, time):
-        self.__entry = time
-
-    def ExitTime(self, time):
-        self.__exit = time
+        self.__entry = None
+        return price
 
     def State(self):
         return self.__state
@@ -42,15 +39,22 @@ class ParkingLot:
     def __init__(self, m, n) -> None:
         self.__lot = [[Slot() for i in range(m)] for j in range(n)]
     
-    def Place(self, plaque):
+    def Place(self, plaque, time):
         y = randint(0,len(self.__lot)-1)
         x = randint(0,len(self.__lot[0])-1)
         this_slot = self.__lot[y][x]
         if this_slot.IsFree():
-            this_slot.AddCar(plaque)
+            this_slot.AddCar(plaque, time)
             return x, y
         else:
             self.Place(plaque)
+
+    def Exit(self, plaque, time):
+        for line in self.__lot:
+            for slot in line:
+                if plaque == slot.Info():
+                    return slot.RemoveCar(time)
+        return None
 
     def Show(self):
         for line in self.__lot:
